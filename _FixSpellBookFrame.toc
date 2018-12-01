@@ -1,0 +1,7 @@
+## Interface: 40300
+## Title: Fix for SpellBookFrame on Dragonwrath (Atlantiss.eu)
+## Author: Garkin
+## Notes: This addon should fix error in SpellBookFrame on Dragonwrath (Atlantiss.eu) - "Found X skills for PROFESSION the max is 2"
+## Version: 1.0 
+
+_FixSpellBookFrame.lua
