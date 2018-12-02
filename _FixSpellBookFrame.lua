@@ -96,6 +96,7 @@ f:SetScript("OnEvent", function()
 					frame["spellIndex" .. i] = spellIndex
 					i = i + 1
 				end
+				numSpells = i - 1
 			elseif numSpells == 1 then
 				frame.spellIndex1 = spelloffset + 1
 				frame.spellIndex2 = nil
