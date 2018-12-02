@@ -5,10 +5,49 @@ local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_LOGIN")
 f:SetScript("OnEvent", function()
 
+	local function OnEnter(self)
+		local spellIndex = self:GetParent():GetParent()["spellIndex" .. self:GetParent():GetID()]
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		if GameTooltip:SetSpellBookItem(spellIndex, "profession") then
+			self.UpdateTooltip = OnEnter
+		else
+			self.UpdateTooltip = nil
+		end
+	end
+
+	for k,v in pairs ({"PrimaryProfession1", "PrimaryProfession2", "SecondaryProfession1", "SecondaryProfession2", "SecondaryProfession3", "SecondaryProfession4"}) do
+		for i = 1, 2 do
+			local parentButton = _G[v]["button"..i]
+			parentButton.new = parentButton.new or CreateFrame("Button", parentButton:GetName().."New", parentButton, "SecureActionButtonTemplate")
+			parentButton.new:SetAllPoints(parentButton)
+			parentButton.new:RegisterForDrag("LeftButton")
+			parentButton.new:SetScript("OnDragStart", function(self)
+				local spellIndex = self:GetParent():GetParent()["spellIndex" .. self:GetParent():GetID()]
+				PickupSpellBookItem(spellIndex, "profession")
+			end)
+			parentButton.new:SetScript("OnEnter", OnEnter)
+			parentButton.new:SetScript("OnLeave", function() GameTooltip:Hide() end)
+		end
+	end
+
 	function UpdateProfessionButton(self)
 		local spellIndex = self:GetParent()["spellIndex" .. self:GetID()]
 		local texture = GetSpellBookItemTexture(spellIndex, SpellBookFrame.bookType);
 		local spellName, subSpellName = GetSpellBookItemName(spellIndex, SpellBookFrame.bookType);
+
+		if self.new then
+			self:Disable()
+			self.new:SetAttribute("type1", "spell")
+			self.new:SetAttribute("spell1", spellName)
+			self.new:SetAttribute("alt-type1", "spell")
+			self.new:SetAttribute("alt-spell1", spellName)
+			self.new:SetAttribute("alt-unit1", "player")
+			self.new:SetAttribute("shift-type1", "macro")
+			self.new:SetAttribute("shift-macrotext1", "/run local sL,tL=GetSpellLink("..spellIndex..",'profession'); if tL then ChatEdit_InsertLink(tL) elseif sL then ChatEdit_InsertLink(sL) end");
+			self.new:SetAttribute("ctrl-type", "macro")
+			self.new:SetAttribute("ctrl-macrotext", "/run PickupSpellBookItem("..spellIndex..",'profession')");
+		end
+
 		local isPassive = IsPassiveSpell(spellIndex, SpellBookFrame.bookType);
 		if ( isPassive ) then
 			self.highlightTexture:SetTexture("Interface\\Buttons\\UI-PassiveHighlight");
@@ -135,5 +174,5 @@ f:SetScript("OnEvent", function()
 			frame.professionName:SetText("");		
 		end
 	end
-
+	
 end)
