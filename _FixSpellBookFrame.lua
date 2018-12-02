@@ -44,8 +44,6 @@ f:SetScript("OnEvent", function()
 			self.new:SetAttribute("alt-unit1", "player")
 			self.new:SetAttribute("shift-type1", "macro")
 			self.new:SetAttribute("shift-macrotext1", "/run local sL,tL=GetSpellLink("..spellIndex..",'profession'); if tL then ChatEdit_InsertLink(tL) elseif sL then ChatEdit_InsertLink(sL) end");
-			self.new:SetAttribute("ctrl-type", "macro")
-			self.new:SetAttribute("ctrl-macrotext", "/run PickupSpellBookItem("..spellIndex..",'profession')");
 		end
 
 		local isPassive = IsPassiveSpell(spellIndex, SpellBookFrame.bookType);
